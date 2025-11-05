@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Restaurant Assistant</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #f7f8fa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: #333;
+    }
+
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      margin-bottom: 15px;
+    }
+
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    #response {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #2c3e50;
+      background-color: #ecf0f1;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🍽 Smart Restaurant Assistant</h1>
+    <input type="text" id="userInput" placeholder="Ask about today's menu..." />
+    <br>
+    <button onclick="getResponse()">Submit</button>
+
+    <div id="response"></div>
+  </div>
+
+  <script>
+    async function getResponse() {
+      const userInput = document.getElementById('userInput').value;
+      const responseDiv = document.getElementById('response');
+
+      if (!userInput.trim()) {
+        responseDiv.innerText = "Please enter a question!";
+        return;
+      }
+
+      responseDiv.innerText = "Thinking... 🍳";
+
+      try {
+        const res = await fetch("/api/query", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ query: userInput })
+        });
+
+        const data = await res.json();
+        responseDiv.innerText = data.answer || "No response found.";
+      } catch (err) {
+        responseDiv.innerText = "⚠️ Error fetching response.";
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
